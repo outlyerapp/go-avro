@@ -155,7 +155,12 @@ func (writer *SpecificDatumWriter) writeString(v reflect.Value, enc Encoder, s S
 		return fmt.Errorf("Invalid string value: %v", v.Interface())
 	}
 
-	enc.WriteString(v.Interface().(string))
+	if str, ok := v.Interface().(string); ok {
+		enc.WriteString(str)
+	} else if strPtr, ok := v.Interface().(*string); ok {
+		enc.WriteString(*strPtr)
+	}
+
 	return nil
 }
 
